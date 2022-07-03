@@ -9,16 +9,20 @@ public class Hangman {
     private int remainingTries;
     private boolean gameWon;
     private List<Character> previousGuesses;
-    private boolean continuePlaying;
     final int MAX_TRIES_ALLOWED = 7;
 
-    //will replace with constructor
+
+    public Hangman() {
+        noOfTries = 0;
+        remainingTries = 0;
+        gameWon = false;
+    }
+
     public void InitializeGame()
     {
         noOfTries = 0;
         List<String> wordList = ListOfWords();
         selectedWord = SelectWord(wordList);
-//        PrintCharacters(selectedWord);
         previousGuesses = new ArrayList<>();
         guessedWord = new char[selectedWord.length()];
         gameWon=false;
@@ -86,7 +90,7 @@ public class Hangman {
                 if (IsGameWon()) {
                     System.out.println("YOU WON!");
                     gameWon =true;
-                } else if (remainingTries ==0) {
+                } else if (remainingTries == 0) {
                     System.out.println("You lose!. The word to guess was: "+selectedWord);
                 }
 
@@ -101,6 +105,8 @@ public class Hangman {
                 }
             }
         }
+
+        System.out.println("Thank you for playing! See you later!");
 
 
     }
