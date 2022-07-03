@@ -10,7 +10,7 @@ public class Hangman {
     private int noOfTries;
     private int remainingTries;
     private boolean gameWon;
-    //made static and final to make the seed of number generator persist throughout the application
+    //made RANDOM static and final to make the seed of number generator persist throughout the application
     private static final Random RANDOM = new Random();
     private List<Character> previousGuesses;
     final int MAX_TRIES_ALLOWED = 7;
