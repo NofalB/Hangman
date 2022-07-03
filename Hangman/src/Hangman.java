@@ -8,6 +8,7 @@ public class Hangman {
     private int noOfTries;
     private int remainingTries;
     private boolean gameWon;
+    private static final Random RANDOM = new Random();
     private List<Character> previousGuesses;
     final int MAX_TRIES_ALLOWED = 7;
 
@@ -52,7 +53,7 @@ public class Hangman {
 
     private String SelectWord(List<String> wordList)
     {
-        int rnd = new Random().nextInt(wordList.size());
+        int rnd =RANDOM.nextInt(wordList.size());
         return wordList.get(rnd);
     }
 
@@ -105,10 +106,7 @@ public class Hangman {
                 }
             }
         }
-
         System.out.println("Thank you for playing! See you later!");
-
-
     }
 
     private void PrintCurrentGuess()
