@@ -6,6 +6,8 @@ public class Hangman {
     private char[] guessedWord;
     private StringBuffer displaySecretWord;
     private int noOfTries;
+    private int remainingTries;
+    private boolean gameWon;
     private List<Character> previousGuesses;
     private boolean continuePlaying;
     final int MAX_TRIES_ALLOWED = 7;
@@ -19,6 +21,7 @@ public class Hangman {
 //        PrintCharacters(selectedWord);
         previousGuesses = new ArrayList<>();
         guessedWord = new char[selectedWord.length()];
+        gameWon=false;
 
         for (int i=0;i<selectedWord.length();i++) {
             guessedWord[i] = '_';
@@ -29,10 +32,10 @@ public class Hangman {
             displaySecretWord.append("*");
         }
         System.out.println("The word to guess is: "+ displaySecretWord);
-        System.out.println(selectedWord);
+        //System.out.println(selectedWord);
     }
 
-    public List<String> ListOfWords()
+    private List<String> ListOfWords()
     {
         //using array list since it offers more flexibility
         //use file
@@ -43,54 +46,66 @@ public class Hangman {
         return wordList;
     }
 
-    public String SelectWord(List<String> wordList)
+    private String SelectWord(List<String> wordList)
     {
         int rnd = new Random().nextInt(wordList.size());
         return wordList.get(rnd);
     }
 
-    public boolean PlayHangman()
+    public void PlayHangman()
     {
         Scanner player = new Scanner(System.in);
-        int remainingTries = MAX_TRIES_ALLOWED - noOfTries;
-        while(noOfTries < MAX_TRIES_ALLOWED ) {
+        boolean continuePlaying =true;
 
-            System.out.println("Please enter a word to guess: ");
-            String playerInput = player.next().toLowerCase();
-            char guessedChar = playerInput.charAt(0);
+        while(continuePlaying) {
+            remainingTries = MAX_TRIES_ALLOWED - noOfTries;
+            if(noOfTries < MAX_TRIES_ALLOWED && !gameWon)
+            {
+                System.out.println("Please enter a word to guess: ");
+                String playerInput = player.next().toLowerCase();
+                char guessedChar = playerInput.charAt(0);
 
-            if (ValidateUserInput(playerInput)) {
-                if (previousGuesses.contains(guessedChar)) {
-                    System.out.println("Already guessed this letter. Please try again.");
-                } else {
-                    if (!CheckGuessedWord(guessedChar)) {
-                        remainingTries = MAX_TRIES_ALLOWED - (++noOfTries);
+                if (ValidateUserInput(playerInput)) {
+                    if (previousGuesses.contains(guessedChar)) {
+                        System.out.println("Already guessed this letter. Please try again.");
+                    } else {
+                        if (!CheckGuessedWord(guessedChar)) {
+                            remainingTries = MAX_TRIES_ALLOWED - (++noOfTries);
+                        }
                     }
                 }
+                PrintCurrentGuess();
 
-//                else if (!CheckGuessedWord(guessedChar)) {
-            }
-            PrintCurrentGuess();
+                System.out.println("Tries left: " + remainingTries);
+                System.out.print("Already used alpahbets: ");
+                for (char c : previousGuesses) {
+                    System.out.print(c + "\t");
+                }
+                System.out.println();
 
-            System.out.println("Tries left: " + remainingTries);
-            System.out.print("Already used alpahbets: ");
-            for (char c : previousGuesses) {
-                System.out.print(c + "\t");
-            }
-            System.out.println();
+                if (IsGameWon()) {
+                    System.out.println("YOU WON!");
+                    gameWon =true;
+                } else if (remainingTries ==0) {
+                    System.out.println("You lose!. The word to guess was: "+selectedWord);
+                }
 
-            //maybe guessed word ==secret word
-            if (IsGameWon()) {
-                System.out.println("YOU WON!");
-                return true;
+            }else {
+                System.out.println("Would you like to play again?(y/n)");
+                String choice = player.next();
+                if (choice.equals("n"))
+                {
+                    continuePlaying = false;
+                } else if (choice.equals("y")) {
+                    InitializeGame();
+                }
             }
         }
 
-        System.out.println("You lose. Would you like to play again?(y/n)");
-        return false;
+
     }
 
-    public void PrintCurrentGuess()
+    private void PrintCurrentGuess()
     {
         String printResult ="";
         for (char c: guessedWord) {
@@ -99,7 +114,7 @@ public class Hangman {
         System.out.println("Word guessed so far: "+printResult);
     }
 
-    public boolean ValidateUserInput(String guessedChar)
+    private boolean ValidateUserInput(String guessedChar)
     {
         if (guessedChar.length() != 1 || guessedChar.equals("") || guessedChar == null)
         {
@@ -114,7 +129,7 @@ public class Hangman {
 
     }
 
-    public boolean CheckGuessedWord(char guessedChar)
+    private boolean CheckGuessedWord(char guessedChar)
     {
         boolean wordFound = false;
         previousGuesses.add(guessedChar);
@@ -127,18 +142,9 @@ public class Hangman {
         return wordFound;
     }
 
-    public boolean IsGameWon()
+    private boolean IsGameWon()
     {
-//        for (char c: guessedWord) {
-//            if (c == '_')
-//            {
-//                return false;
-//            }
-//        }
-//        return true;
-
         return selectedWord.equals( String.valueOf(guessedWord));
     }
-
 
 }
